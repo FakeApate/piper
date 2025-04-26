@@ -1,0 +1,16 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "debug",
+            "displayName": "CMake Build Preset",
+            "description": "",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/out/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install"
+            }
+        }
+    ]
+}
