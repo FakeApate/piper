@@ -1,9 +1,13 @@
 CompileFlags:
   CompilationDatabase: out/build
 Diagnostics:
-  Suppress: llvmlibc-restrict-system-libc-headers
+  Suppress:
+    [
+      "llvmlibc-restrict-system-libc-headers",
+      "cppcoreguidelines-avoid-non-const-global-variables",
+    ]
   ClangTidy:
     Add: ["*"]
     Remove: ["altera-*"]
     CheckOptions:
-      readability-identifier-naming.VariableCase: camelBack
+      readability-identifier-naming.VariableCase: snake_case

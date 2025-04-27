@@ -3,13 +3,13 @@
     "configurePresets": [
         {
             "name": "debug",
-            "displayName": "CMake Build Preset",
-            "description": "",
-            "generator": "Unix Makefiles",
+            "displayName": "GCC",
+            "description": "Using compilers: C = /usr/bin/gcc",
             "binaryDir": "${sourceDir}/out/build",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install"
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install",
+                "CMAKE_C_COMPILER": "/usr/bin/gcc",
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         }
     ]

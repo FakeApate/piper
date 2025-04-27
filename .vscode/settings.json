@@ -1,6 +1,6 @@
 {
     "cmake.generator": "Unix Makefiles",
-    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.sourceDirectory": "/mnt/dev/piper",
     "cmake.buildDirectory": "${workspaceFolder}/out/build",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureOnOpen": true,
@@ -17,5 +17,6 @@
     "files.associations": {
         "*.c": "c",
         "*.h": "c"
-    }
+    },
+    "cmake.useCMakePresets": "always"
 }

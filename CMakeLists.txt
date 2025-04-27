@@ -10,13 +10,18 @@ pkg_check_modules(ALSA REQUIRED IMPORTED_TARGET alsa)
 pkg_check_modules(SPA REQUIRED IMPORTED_TARGET libspa-0.2)
 
 find_library(MATH_LIBRARY m)
+include_directories(inc)
 
-add_executable(piper main.c)
+add_executable(piper
+    src/main.c
+    src/alsa_control.c 
+)
 
 target_include_directories(piper PRIVATE
     ${PIPEWIRE_INCLUDE_DIRS}
     ${ALSA_INCLUDE_DIRS}
     ${SPA_INCLUDE_DIRS}
+    inc
 )
 
 target_compile_definitions(piper PRIVATE

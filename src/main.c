@@ -5,21 +5,32 @@
  * Copyright (c) 2025 Samuel Imboden
  */
 
+#include "alsa_control.h"
 #include <alsa/asoundlib.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <linux/hidraw.h>
 #include <math.h>
 #include <pipewire/node.h>
 #include <pipewire/pipewire.h>
 #include <spa/debug/pod.h>
+#include <spa/param/audio/format-utils.h>
 #include <spa/param/props.h>
 #include <spa/pod/iter.h>
 #include <spa/pod/pod.h>
 #include <spa/utils/dict.h>
+#include <stdio.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #define NODE_NAME_KEY "node.name"
 #define NODE_NAME \
 	"alsa_output.usb-EPOS_EPOS_GSX_1000_Speaker_A004550224704125-00.analog-output-surround71"
 #define LOGF 20.0F
+#define DB_MIN -5772.0F
+#define DB_MAX -135.0F
+#define BUFFER_SIZE 512
 
 struct data {
 	struct pw_main_loop *loop;
@@ -33,55 +44,10 @@ struct data {
 	struct spa_hook node_listener;
 };
 
-static inline float volume_to_dB(float volume)
+static inline long volume_to_dB(float volume)
 {
-	return (volume <= 0.0F) ? -INFINITY : LOGF * log10f(volume);
-}
-
-static void set_alsa_volume(float volume)
-{
-	snd_mixer_t *handle = nullptr;
-	snd_mixer_selem_id_t *sid = nullptr;
-	snd_mixer_elem_t *elem = nullptr;
-
-	if (snd_mixer_open(&handle, 0) < 0) {
-		return;
-	}
-	if (snd_mixer_attach(handle, "default") < 0) {
-		goto error;
-	}
-	if (snd_mixer_selem_register(handle, nullptr, nullptr) < 0) {
-		goto error;
-	}
-	if (snd_mixer_load(handle) < 0) {
-		goto error;
-	}
-
-	snd_mixer_selem_id_malloc(&sid);
-	snd_mixer_selem_id_set_index(sid, 1);
-	snd_mixer_selem_id_set_name(sid, "PCM");
-
-	elem = snd_mixer_find_selem(handle, sid);
-	if (elem) {
-		long desiredmB = lroundf(volume * 100.0F);
-
-		long mindB = 0;
-		long maxdB = 0;
-		snd_mixer_selem_get_playback_dB_range(elem, &mindB, &maxdB);
-
-		if (desiredmB < mindB) {
-			desiredmB = mindB;
-		}
-		if (desiredmB > maxdB) {
-			desiredmB = maxdB;
-		}
-		printf("\tdesiredmB Volume: %ld\n", desiredmB);
-		snd_mixer_selem_set_playback_dB_all(elem, desiredmB, 0);
-	}
-
-	snd_mixer_selem_id_free(sid);
-error:
-	snd_mixer_close(handle);
+	return lroundf((volume <= 0.0F) ? -INFINITY :
+					  LOGF * log10f(volume) * 100.0F);
 }
 
 static void node_info(void *object, const struct pw_node_info * /*unused*/)
@@ -113,8 +79,8 @@ void node_param(void * /*unused*/, int /*unused*/, uint32_t paramId,
 						avgVolume += volumes[i];
 					}
 					avgVolume /= (float)nValues;
-					float avgdB = volume_to_dB(avgVolume);
-					set_alsa_volume(avgdB);
+					long avgdB = volume_to_dB(avgVolume);
+					alsa_control_set_db(avgdB, true);
 				}
 			}
 		}
@@ -171,6 +137,11 @@ int main(int argc, char *argv[])
 
 	data.registry = pw_core_get_registry(data.core, PW_VERSION_REGISTRY,
 					     0 /* user_data size */);
+
+	if (!alsa_control_init(pw_main_loop_get_loop(data.loop))) {
+		(void)fprintf(stderr, "Failed to initialize ALSA control\n");
+		return EXIT_FAILURE;
+	}
 
 	pw_registry_add_listener(data.registry, &data.registry_listener,
 				 &registryEvents, &data);
