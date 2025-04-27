@@ -36,28 +36,6 @@ make
 
 This will produce a `piper` binary in the `build` directory.
 
-## Usage
-
-```bash
-./piper [optional-full-node-name]
-```
-
-Examples:
-
-- Run without filter (first Audio/Sink node):
-
-```bash
-./piper
-```
-
-- Run and match only nodes containing "GSX_1000" in their name:
-
-```bash
-./piper alsa_output.usb-EPOS_EPOS_GSX_1000_Speaker_A004550224704125-00.analog-output-surround71
-```
-
-Piper will connect to the matching PipeWire node and keep the ALSA volume synchronized automatically.
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
