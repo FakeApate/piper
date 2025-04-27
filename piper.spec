@@ -1,5 +1,5 @@
 Name:           piper
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        PipeWire and ALSA volume synchronizer daemon
 
@@ -25,12 +25,14 @@ automatically.
 %cmake_install
 
 %post
-systemctl daemon-reexec
-systemctl enable --now piper.service
+echo "After install, please run:"
+echo "  systemctl --user daemon-reload"
+echo "  systemctl --user enable --now piper.service"
+
 
 %files
 /usr/bin/piper
-/usr/lib/systemd/system/piper.service
+/usr/lib/systemd/user/piper.service
 
 %changelog
 * Sun Apr 27 2025 Samuel Imboden <imboden.samuel@protonmail.ch> - 1.0-1

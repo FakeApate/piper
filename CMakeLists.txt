@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(piper VERSION 1.0.0 LANGUAGES C)
+project(piper VERSION 1.0.1 LANGUAGES C)
 
 find_package(PkgConfig REQUIRED)
 
@@ -46,4 +46,4 @@ set_target_properties(piper PROPERTIES
 )
 
 install(TARGETS piper DESTINATION bin)
-install(FILES piper.service DESTINATION lib/systemd/system)
+install(FILES piper.service DESTINATION lib/systemd/user)
