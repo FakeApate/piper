@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Piper release script
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 PROJECT_NAME="piper"
 TOPDIR="${PWD}/rpmbuild"
 

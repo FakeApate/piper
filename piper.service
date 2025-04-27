@@ -1,14 +1,20 @@
 [Unit]
 Description=Piper Audio Volume Sync Service
-After=sound.target pipewire.service
+After=pipewire.service sound.target
 
 [Service]
 ExecStart=/usr/bin/piper
 Restart=on-failure
 RestartSec=2
-Group=audio
 StandardOutput=journal
 StandardError=journal
+
+# Important for ALSA access
+PrivateDevices=no
+PrivateTmp=no
+ProtectHome=no
+ProtectSystem=no
+DeviceAllow=/dev/snd/* rwm
 
 [Install]
 WantedBy=default.target
