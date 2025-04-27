@@ -1,0 +1,15 @@
+[Unit]
+Description=Piper Audio Volume Sync Service
+After=sound.target pipewire.service
+
+[Service]
+ExecStart=/usr/local/bin/piper
+Restart=on-failure
+RestartSec=2
+User=
+Group=audio
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

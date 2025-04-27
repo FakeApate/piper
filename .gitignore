@@ -1,1 +1,10 @@
 .cache
+# RPM build artifacts
+rpmbuild/
+*.rpm
+*.tar.gz
+BUILD/
+BUILDROOT/
+RPMS/
+SOURCES/
+SRPMS/

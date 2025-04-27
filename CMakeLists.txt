@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
-project(piper VERSION 0.1.0 LANGUAGES C)
+project(piper VERSION 1.0.0 LANGUAGES C)
 
 find_package(PkgConfig REQUIRED)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(CMAKE_INSTALL_PREFIX /usr)
 
 pkg_check_modules(PIPEWIRE REQUIRED IMPORTED_TARGET libpipewire-0.3)
 pkg_check_modules(ALSA REQUIRED IMPORTED_TARGET alsa)
@@ -45,3 +46,4 @@ set_target_properties(piper PROPERTIES
 )
 
 install(TARGETS piper DESTINATION bin)
+install(FILES piper.service DESTINATION lib/systemd/system)
